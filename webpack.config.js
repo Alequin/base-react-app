@@ -1,13 +1,12 @@
+const path = require('path')
 
-const path = require('path');
+const appEntry = './client/main.js'
 
-const appEntry = "./client/main.js"
-
-const bundleName = "bundle.js"
-const bundleOutput = path.resolve(__dirname, "build")
+const bundleName = 'bundle.js'
+const bundleOutput = path.resolve(__dirname, 'build')
 
 module.exports = {
-  mode: "development",
+  mode: 'development',
   entry: appEntry,
   output: {
     path: bundleOutput,
@@ -15,21 +14,19 @@ module.exports = {
   },
   resolve: {
     alias: {
-      common: path.resolve(__dirname, './common'),
+      common: path.resolve(__dirname, './client-common')
     },
-		extensions: ['.js', '.jsx']
-	},
+    extensions: ['.js', '.jsx']
+  },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: "babel-loader",
+        loader: 'babel-loader',
         options: {
-          presets: ["es2015"]
+          presets: ['es2015']
         },
-        exclude: [
-          path.resolve(__dirname, "node_modules")
-        ],
+        exclude: [path.resolve(__dirname, 'node_modules')]
       }
     ]
   }
