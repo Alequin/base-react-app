@@ -1,12 +1,12 @@
 import React from 'react'
-import ReactQueryParams from 'react-query-params'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import gql from 'graphql-tag'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 import ApolloClient from 'apollo-boost'
-import { ApolloProvider } from 'react-apollo'
+import { Query, ApolloProvider } from 'react-apollo'
 
 const client = new ApolloClient({
-  uri: `${location.hostname}/graphql`
+  uri: `/graphql`
 })
 
 export default () => {
@@ -19,6 +19,19 @@ export default () => {
   )
 }
 
+const QUERY = gql`
+  {
+    search{
+      id
+    }
+  }
+`
+
 const Hello = () => {
-  return <div>Hello</div>
+  return <Query query={QUERY}>
+    {({error, loading, data}) => {
+      if(data.search) return <div>{data.search.id}</div>
+      return <div>Loading</div>
+    }}
+  </Query>
 }

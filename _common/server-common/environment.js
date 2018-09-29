@@ -8,6 +8,7 @@ const options = {
 }
 
 const currentEnvironment = options[requestedEnvironment.toUpperCase()]
+process.env.NODE_ENV = currentEnvironment
 
 module.exports = Object.freeze({
   current: currentEnvironment,

@@ -1,33 +1,13 @@
-const path = require('path')
+const developmentConfig = require('./webpack-development.config')
 
-const appEntry = './client/main.js'
+const webpack = require('webpack')
+const uglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')
 
-const bundleName = 'bundle.js'
-const bundleOutput = path.resolve(__dirname, 'build')
-
-module.exports = {
-  mode: 'development',
-  entry: appEntry,
-  output: {
-    path: bundleOutput,
-    filename: bundleName
-  },
-  resolve: {
-    alias: {
-      common: path.resolve(__dirname, './client-common')
-    },
-    extensions: ['.js', '.jsx']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
-        options: {
-          presets: ['es2015']
-        },
-        exclude: [path.resolve(__dirname, 'node_modules')]
-      }
-    ]
-  }
-}
+module.exports = Object.assign(developmentConfig, {
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    new uglifyjsWebpackPlugin()
+  ]
+})
