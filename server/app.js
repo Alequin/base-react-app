@@ -8,16 +8,12 @@ const path = require('path')
 const { ApolloServer } = require('apollo-server-express')
 const schema = require('./graphql/schema')
 
-const environment = require('common/server-common/environment')
+const serverConfig = require('server-common/server-config')
+const environment = require('server-common/environment')
 
 const environmentServer = environment.isDevelopment
   ? require('./development-server')
   : require('./production-server')
-
-const serverConfig = require('common/server-common/server-config')
-
-const GRAPHQL_ENDPOINT = '/graphql'
-const PORT = serverConfig.port || 3000
 
 const app = express()
 
@@ -43,19 +39,21 @@ const server = new ApolloServer({
     }
   }
 })
+
+const GRAPHQL_ENDPOINT = '/graphql'
 server.applyMiddleware({
   app,
   path: GRAPHQL_ENDPOINT
 })
 
 app.use(bodyParser.json())
-app.use(express.static(__dirname + './../build'))
+app.use(express.static(__dirname + './../dist'))
 
 app.use('/', environmentServer)
 app.use('/api', routes)
 
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, './../build/index.html'), function (err) {
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, './../dist/index.html'), function (err) {
     if (err) {
       console.log(err)
       res.status(500).send(err)
@@ -63,6 +61,7 @@ app.get('/*', function (req, res) {
   })
 })
 
+const PORT = serverConfig.port || 3000
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`)
 })

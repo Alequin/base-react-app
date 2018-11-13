@@ -1,13 +1,6 @@
-const developmentConfig = require('./webpack-development.config')
+const webpackBase = require('./webpack-base.config')
 
-const webpack = require('webpack')
-const uglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')
-
-module.exports = Object.assign(developmentConfig, {
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    }),
-    new uglifyjsWebpackPlugin()
-  ]
-})
+module.exports = {
+  ...webpackBase,
+  mode: 'production'
+}

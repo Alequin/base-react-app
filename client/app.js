@@ -28,10 +28,12 @@ const QUERY = gql`
 `
 
 const Hello = () => {
-  return <Query query={QUERY}>
-    {({error, loading, data}) => {
-      if(data.search) return <div>{data.search.id}</div>
-      return <div>Loading</div>
-    }}
-  </Query>
+  return (
+    <Query query={QUERY}>
+      {({ error, loading, data }) => {
+        if (data.search) return <div>{data.search.id}</div>
+        return <div>Loading</div>
+      }}
+    </Query>
+  )
 }
