@@ -8,11 +8,11 @@ const { ApolloServer } = require('apollo-server-express')
 const schema = require('./graphql/schema')
 
 const serverConfig = require('server-common/server-config')
-const environment = require('server-common/environment')
+const { isDevelopment, isProduction } = require('server-common/environment')
 
 const sendFile = require('./send-file')
 
-const environmentServer = environment.isDevelopment
+const environmentServer = isDevelopment
   ? require('./development-server')
   : require('./production-server')
 
@@ -32,7 +32,7 @@ const GRAPHQL_PLAYGROUND_CONGIF = {}
 
 const server = new ApolloServer({
   schema,
-  playground: environment.isDevelopment ? GRAPHQL_PLAYGROUND_CONGIF : false,
+  playground: isDevelopment ? GRAPHQL_PLAYGROUND_CONGIF : false,
   context: ({ req, res }) => {
     return {
       req: req,
@@ -53,11 +53,12 @@ app.use('/', environmentServer)
 app.use('/api', routes)
 
 app.get('*.js', function ({ url }, res) {
-  const shouldSendZippedFile = url.includes('bundle.js')
+  const shouldSendZippedFile = isProduction && url.includes('bundle.js')
 
   if (shouldSendZippedFile) {
     res.set('Content-Encoding', 'gzip')
   }
+  console.log(url)
 
   const filePostfix = shouldSendZippedFile ? '.gz' : ''
 
