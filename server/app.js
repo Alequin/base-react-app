@@ -8,7 +8,8 @@ const { ApolloServer } = require('apollo-server-express')
 const schema = require('./graphql/schema')
 
 const serverConfig = require('server-common/server-config')
-const { isDevelopment, isProduction } = require('server-common/environment')
+const { isDevelopment } = require('server-common/environment')
+const handleRequestFroJavascriptFiles = require('./handle-request-for-javascript-files')
 
 const sendFile = require('./send-file')
 
@@ -52,25 +53,9 @@ app.use(bodyParser.json())
 app.use('/', environmentServer)
 app.use('/api', routes)
 
-app.get('*.js', function ({ url }, res) {
-  const shouldSendZippedFile = isProduction && url.includes('bundle.js')
+app.get('*.js', handleRequestFroJavascriptFiles)
 
-  if (shouldSendZippedFile) {
-    res.set('Content-Encoding', 'gzip')
-  }
-  console.log(url)
-
-  const filePostfix = shouldSendZippedFile ? '.gz' : ''
-
-  sendFile(res, url + filePostfix).catch(err => {
-    if (err) {
-      console.log(err)
-      res.status(500).send(err)
-    }
-  })
-})
-
-app.get('/', function (req, res) {
+app.get('/', function (_req, res) {
   sendFile(res, '/build/index.html').catch(err => {
     if (err) {
       console.log(err)
