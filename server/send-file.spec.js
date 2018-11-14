@@ -2,26 +2,25 @@ const sendFile = require('./send-file')
 const path = require('path')
 
 describe('sendFile', () => {
-  let testWatcher = jest.fn()
+  let mockSendFile = jest.fn((_url, resolvingCallback) => {
+    resolvingCallback()
+  })
   let mockResponse
 
   beforeEach(() => {
     mockResponse = {
-      sendFile: (url, resolvingCallback) => {
-        testWatcher(url)
-        resolvingCallback()
-      }
+      sendFile: mockSendFile
     }
   })
 
   it('Should call response.sendFile once', async () => {
     await sendFile(mockResponse, '/url/path')
-    expect(testWatcher.mock.calls.length).toBe(1)
+    expect(mockSendFile.mock.calls.length).toBe(1)
   })
 
   it('Should modify the url to start from the root folder', async () => {
     await sendFile(mockResponse, '/url/path')
-    expect(testWatcher.mock.calls[0][0]).toBe(
+    expect(mockSendFile.mock.calls[0][0]).toBe(
       path.join(__dirname + './../url/path')
     )
   })

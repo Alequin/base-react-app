@@ -9,9 +9,9 @@ const currentEnvironment = doProcessArgsInclude(PRODUCTION)
 
 process.env.NODE_ENV = currentEnvironment
 
-module.exports = Object.freeze({
+module.exports = {
   options: { DEVELOPMENT, PRODUCTION },
   current: currentEnvironment,
   isDevelopment: currentEnvironment === DEVELOPMENT,
   isProduction: currentEnvironment === PRODUCTION
-})
+}

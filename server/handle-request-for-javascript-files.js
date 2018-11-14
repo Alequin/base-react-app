@@ -1,18 +1,17 @@
-const { isProduction } = require('server-common/environment')
+const environment = require('server-common/environment')
+const sendFile = require('./send-file')
 
-function handleRequestForJavascriptFiles (_req, res) {
-  const shouldSendZippedFile = isProduction && url.includes('bundle.js')
+function handleRequestForJavascriptFiles ({ url }, res) {
+  const shouldSendZippedFile =
+    environment.isProduction && url.includes('bundle.js')
 
   if (shouldSendZippedFile) {
     res.set('Content-Encoding', 'gzip')
   }
-  const filePostfix = shouldSendZippedFile ? '.gz' : ''
 
+  const filePostfix = shouldSendZippedFile ? '.gz' : ''
   sendFile(res, url + filePostfix).catch(err => {
-    if (err) {
-      console.log(err)
-      res.status(500).send(err)
-    }
+    res.status(500).send(err)
   })
 }
 

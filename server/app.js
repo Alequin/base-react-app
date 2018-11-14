@@ -9,7 +9,7 @@ const schema = require('./graphql/schema')
 
 const serverConfig = require('server-common/server-config')
 const { isDevelopment } = require('server-common/environment')
-const handleRequestFroJavascriptFiles = require('./handle-request-for-javascript-files')
+const handleRequestForJavascriptFiles = require('./handle-request-for-javascript-files')
 
 const sendFile = require('./send-file')
 
@@ -53,7 +53,7 @@ app.use(bodyParser.json())
 app.use('/', environmentServer)
 app.use('/api', routes)
 
-app.get('*.js', handleRequestFroJavascriptFiles)
+app.get('*.js', handleRequestForJavascriptFiles)
 
 app.get('/', function (_req, res) {
   sendFile(res, '/build/index.html').catch(err => {
